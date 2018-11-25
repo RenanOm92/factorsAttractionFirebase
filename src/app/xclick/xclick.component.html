@@ -1,0 +1,8 @@
+<div class="mouseX" (click)="myEvent($event)">
+</div>
+
+<img src="./assets/x.png" style="position: absolute;" [ngStyle]="myStyle" *ngIf="count > 0" />
+
+<p *ngIf="count > 2">You clicked {{count}} times already!!! Please take this experiment seriously.</p>
+
+<input type="image" class="centered" src="./assets/submit.png" style="position: absolute;" *ngIf="count > 0" (click)="btnClick();"/>
