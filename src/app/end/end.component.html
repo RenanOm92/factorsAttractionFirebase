@@ -1,13 +1,10 @@
 <div class="all">
 <h3 style="text-align:center;">
   Result: (original position, <span style="color: red;">your position</span>)
-
-    {{items}}
-
 </h3>
 <img [ngStyle]="{'position': 'fixed', 'left': originalLeft, 'top': originalTop}" src="./assets/x.png" alt="X original">
 <img [ngStyle]="{'position': 'fixed', 'left': userLeft, 'top': userTop}" src="./assets/xRed.png" alt="X original">
 
 </div>
 
-<input type="image" class="centered" src="./assets/thanks.png" style="position: absolute;" (click)="btnClick();"/>
+<input type="image" class="centered" src="./assets/thanks.png" style="position: absolute;" (click)="btnClick(); addX(originalLeft,originalTop,userLeft,userTop);"/>

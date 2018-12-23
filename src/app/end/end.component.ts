@@ -3,8 +3,10 @@ import { Router } from '@angular/router';
 import { DataService } from '../data.service';
 
 import { AngularFirestore } from '@angular/fire/firestore';
+
 import { Observable } from 'rxjs';
 
+export interface dataX { originalLeft: string; originalTop: string; userLeft: string; userTop: string;}
 
 @Component({
   selector: 'app-end',
@@ -13,16 +15,19 @@ import { Observable } from 'rxjs';
 })
 export class EndComponent implements OnInit {
 	
-	originalLeft;
-	originalTop;
-	userLeft;
-	userTop;
+	originalLeft: string;
+	originalTop : string;
+	userLeft: string;
+	userTop: string;
 
-	items: Observable<any[]>;
-
-  constructor(private router: Router, private dataService: DataService,private db: AngularFirestore) {
-
-  	this.items = db.collection('items').valueChanges();
+  constructor(private router: Router, private dataService: DataService, private db: AngularFirestore) {
+  	//var originalLeft = this.originalLeft;
+  	//var originalTop = this.originalTop;
+  	//var userLeft = this.userLeft;
+  	//var userTop = this.userTop;
+  	
+  	//const dataXX: dataX = {originalLeft,originalTop,userLeft,userTop};
+  	//this.db.collection('items').doc('Testexx').set(dataXX);
   }
 
   ngOnInit() {
@@ -35,5 +40,10 @@ export class EndComponent implements OnInit {
   btnClick() {
         this.router.navigateByUrl('/homescreen');
 	};
+
+  addX(private originalLeft: string, private originalTop: string, private userLeft: string, private userTop: string){
+  	const dataX: dataX = {originalLeft, originalTop, userLeft, userTop};
+  	this.db.collection('items').doc('Testex').set(dataX);
+  };
 
 }
