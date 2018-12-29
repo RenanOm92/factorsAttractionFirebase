@@ -6,7 +6,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 
 import { Observable } from 'rxjs';
 
-export interface dataX { originalLeft: string; originalTop: string; userLeft: string; userTop: string;}
+export interface dataPositionOfX { originalLeft: string; originalTop: string; userLeft: string; userTop: string;}
 
 @Component({
   selector: 'app-end',
@@ -21,13 +21,6 @@ export class EndComponent implements OnInit {
 	userTop: string;
 
   constructor(private router: Router, private dataService: DataService, private db: AngularFirestore) {
-  	//var originalLeft = this.originalLeft;
-  	//var originalTop = this.originalTop;
-  	//var userLeft = this.userLeft;
-  	//var userTop = this.userTop;
-  	
-  	//const dataXX: dataX = {originalLeft,originalTop,userLeft,userTop};
-  	//this.db.collection('items').doc('Testexx').set(dataXX);
   }
 
   ngOnInit() {
@@ -35,15 +28,18 @@ export class EndComponent implements OnInit {
 	  this.originalTop = this.dataService.getRandomPositionTop().toString()+'px';
 	  this.userLeft = this.dataService.getUserPositionLeft().toString()+'px';
 	  this.userTop = this.dataService.getUserPositionTop().toString()+'px';
+
+	  var originalLeft = this.originalLeft;
+  	  var originalTop = this.originalTop;
+  	  var userLeft = this.userLeft;
+  	  var userTop = this.userTop;
+
+  	  const objectXPosition: dataPositionOfX = {originalLeft,originalTop,userLeft,userTop};
+  	  this.db.collection('items').doc('Opa').set(objectXPosition);
   }
 
   btnClick() {
         this.router.navigateByUrl('/homescreen');
 	};
-
-  addX(private originalLeft: string, private originalTop: string, private userLeft: string, private userTop: string){
-  	const dataX: dataX = {originalLeft, originalTop, userLeft, userTop};
-  	this.db.collection('items').doc('Testex').set(dataX);
-  };
 
 }
