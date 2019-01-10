@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { FormsModule }   from '@angular/forms';
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -13,13 +14,16 @@ import { StartExperimentComponent } from './start-experiment/start-experiment.co
 import { EndComponent } from './end/end.component';
 import { DataService } from './data.service';
 import { FillUpComponent } from './fill-up/fill-up.component';
+import { InstructionsComponent } from './instructions/instructions.component';
 
 const appRoutes: Routes = [
   { path: 'homescreen', component: HomescreenComponent },
-  { path: 'xclick', component: XclickComponent },
+  { path: 'instructions', component: InstructionsComponent },
   { path: 'start', component: StartExperimentComponent },
-  { path: 'end', component: EndComponent },
   { path: 'fillup', component: FillUpComponent },
+  { path: 'xclick', component: XclickComponent },
+  { path: 'end', component: EndComponent },
+
 ];
 
 
@@ -31,9 +35,11 @@ const appRoutes: Routes = [
     StartExperimentComponent,
     EndComponent,
     FillUpComponent,
+    InstructionsComponent,
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
 	RouterModule.forRoot(

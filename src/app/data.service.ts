@@ -11,6 +11,8 @@ export class DataService {
 	private userPositionLeft;
 	private userPositionTop;
 
+  private email;
+
   	setRandomPositionLeft(data){
     	this.randomPositionLeft = data;
   	}
@@ -42,4 +44,12 @@ export class DataService {
   	getUserPositionTop(){
     	return this.userPositionTop;
   	}
+
+    setEmail(data){
+      this.email = data;
+    }
+
+    getEmail(){
+      return this.email;
+    }
 }

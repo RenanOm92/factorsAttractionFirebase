@@ -10,14 +10,10 @@ import { DataService } from "../data.service";
 export class XclickComponent{
 
 	myStyle = {};
-	
-	count = 0;
 
 	constructor(private router: Router, private dataService: DataService) { }
 	
 	myEvent(event) {		
-		
-		this.count++;
 		
 		this.dataService.setUserPositionLeft(event.clientX);
 	    this.dataService.setUserPositionTop(event.clientY);
