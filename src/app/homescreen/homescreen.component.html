@@ -4,12 +4,17 @@
 
 <h2 style="text-align:center;">Welcome to the factors of attraction experiment! </h2>
 
+<p>This experiment have the purpose to test the hypothesis of attractions points on culture transmission.</p>
+
+<p>Your data will be recorded with the only purpose of scientific studies.</p>
+
 <form #emailForm="ngForm" (submit)="onSubmit()">
-    <label for="email">Please enter you e-mail:</label>
+    <label for="email">
+For proceeding with the experiment, please enter your e-mail: </label>
     <input type="email" class="form-control" id="email" ngModel email="true" [(ngModel)]="email" name="email">
 
-    <br>
-	Click the button below to go to the instructions. 
+    <p>
+	Click the button below to go to the instructions. </p>
 	<input type="image" alt="Submit" name="submit" class="centered" src="./assets/start.png" />
 </form>
 

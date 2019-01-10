@@ -14,12 +14,6 @@ export class HomescreenComponent {
 	constructor(private router: Router, private dataService: DataService) { }
 
 	email: string;
-
-	btnClick() {
-		this.dataService.setEmail('this.email');
-        this.router.navigateByUrl('/instructions');
-	};
-
 	
 	onSubmit() {
   		this.dataService.setEmail(this.email);

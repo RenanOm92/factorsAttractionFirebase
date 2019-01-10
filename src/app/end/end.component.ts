@@ -38,7 +38,8 @@ export class EndComponent implements OnInit {
   	var userTop = this.userTop;
 
   	  const objectXPosition: dataPositionOfX = {email,originalLeft,originalTop,userLeft,userTop};
-  	  this.db.collection('items').doc('Opa').set(objectXPosition);
+  	  //this.db.collection('items').doc('email').set(objectXPosition);
+      this.db.collection('items').add(objectXPosition);
   }
 
   btnClick() {
