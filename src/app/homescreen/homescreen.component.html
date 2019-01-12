@@ -10,11 +10,10 @@
 
 <form #emailForm="ngForm" (submit)="onSubmit()">
     <label for="email">
-For proceeding with the experiment, please enter your e-mail: </label>
+	For proceeding with the experiment, please enter your e-mail: </label>
     <input type="email" class="form-control" id="email" ngModel email="true" [(ngModel)]="email" name="email">
 
-    <p>
-	Click the button below to go to the instructions. </p>
+    <p>Click the button below to go to the instructions. </p>
 	<input type="image" alt="Submit" name="submit" class="centered" src="./assets/start.png" />
 </form>
 
