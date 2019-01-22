@@ -1,4 +1,4 @@
-.centered {
+.centered { /* not used anymore, it was for the buttons being centrelized, not good for mobile version */
   position: fixed;
   top: 50%;
   left: 50%;
