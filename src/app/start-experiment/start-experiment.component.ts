@@ -60,5 +60,6 @@ export class StartExperimentComponent implements OnInit {
     onResize(event?) {
       this.screenHeight = window.innerHeight;
       this.screenWidth = window.innerWidth;
+      this.dataService.setScreenSize(this.screenWidth.toString()+"x"+this.screenHeight.toString());
 	}
 }

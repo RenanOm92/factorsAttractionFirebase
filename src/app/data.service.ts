@@ -5,51 +5,61 @@ export class DataService {
 
   constructor() { }
 
-  private randomPositionLeft;
-	private randomPositionTop;
+  private randomPositionLeft; // Coordinate generated on the X axes, based on the width of the screen on the start of the experiment
+	private randomPositionTop; // Coordinate generated on the Y axes, based on the height of the screen
 
-	private userPositionLeft;
-	private userPositionTop;
+	private userPositionLeft; // Coordinate from the feedback of the user on the X axes
+	private userPositionTop; // Coordinate from the feedback of the user on the Y axes
 
   private email;
 
-  	setRandomPositionLeft(data){
-    	this.randomPositionLeft = data;
-  	}
+  private screenSize; // Width x Height
 
-  	getRandomPositionLeft(){
-    	return this.randomPositionLeft;
-  	}
+	setRandomPositionLeft(data){
+  	this.randomPositionLeft = data;
+	}
 
-  	setRandomPositionTop(data){
-    	this.randomPositionTop = data;
-  	}
+	getRandomPositionLeft(){
+  	return this.randomPositionLeft;
+	}
 
-  	getRandomPositionTop(){
-    	return this.randomPositionTop;
-  	}
+	setRandomPositionTop(data){
+  	this.randomPositionTop = data;
+	}
 
-  	setUserPositionLeft(data){
-    	this.userPositionLeft = data;
-  	}
+	getRandomPositionTop(){
+  	return this.randomPositionTop;
+	}
 
-  	getUserPositionLeft(){
-    	return this.userPositionLeft;
-  	}
+	setUserPositionLeft(data){
+  	this.userPositionLeft = data;
+	}
 
-  	setUserPositionTop(data){
-    	this.userPositionTop = data;
-  	}
+	getUserPositionLeft(){
+  	return this.userPositionLeft;
+	}
 
-  	getUserPositionTop(){
-    	return this.userPositionTop;
-  	}
+	setUserPositionTop(data){
+  	this.userPositionTop = data;
+	}
 
-    setEmail(data){
-      this.email = data;
-    }
+	getUserPositionTop(){
+  	return this.userPositionTop;
+	}
 
-    getEmail(){
-      return this.email;
-    }
+  setEmail(data){
+    this.email = data;
+  }
+
+  getEmail(){
+    return this.email;
+  }
+
+  setScreenSize(data){
+    this.screenSize = data;
+  }
+
+  getScreenSize(){
+    return this.screenSize;
+  }
 }
