@@ -1,28 +1,26 @@
-.centered { /* not used anymore, it was for the buttons being centrelized, not good for mobile version */
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  /* bring your own prefixes */
-  transform: translate(-50%, -50%);
+* {
+    margin:0;
+    padding:0;
 }
 
-.wholepage{
-	background-color: #efefef;
-	width: 100%;
-	height: 100%;
-	position: absolute; 
-	top: 0; 
-	left: 0;
-	font-family: Ubuntu;
-}
-
-.footer {
-  position: absolute;
-  right: 0;
-  bottom: 0;
+.content {
+  min-height: calc(100vh - 80px);
+  background-color: #efefef;
+  font-family: Ubuntu;
+  top: 0; 
   left: 0;
-  padding: 1rem;
+  line-height: 35px;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+footer {
+  height: 80px;
   background-color: #d9d9d9;
   text-align: center;
   font-family: Ubuntu;
+}
+
+.buttonHolder{ 
+  text-align: center; 
 }

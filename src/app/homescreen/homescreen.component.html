@@ -1,30 +1,36 @@
-<div class="wholepage">
+<div class="content">
 
-<h2 style="color: red; text-align:center;">Website under construction</h2>
+	<h2 style="text-align:center;">Welcome to the factors of attraction experiment! </h2>
 
-<h2 style="text-align:center;">Welcome to the factors of attraction experiment! </h2>
+	<br>
 
-<p>This experiment have the purpose to test the hypothesis of attractions points on culture transmission.</p>
+	<p>This experiment have the purpose to test the hypothesis of attractions points on culture transmission.</p>
 
-<p>Your data will be recorded with the only purpose of scientific studies.</p>
+	<p>Your data will be recorded with the only purpose of scientific studies.</p>
 
-<form #emailForm="ngForm" (submit)="onSubmit()">
-    <label for="email">
-	For proceeding with the experiment, please enter your e-mail: </label>
-    <input type="email" class="form-control" id="email" ngModel email="true" [(ngModel)]="email" name="email">
+	<form #emailForm="ngForm" (submit)="onSubmit()">
+	    <label for="email">
+			For proceeding with the experiment, please enter your e-mail: 
+		</label>
+	    
+	    <input type="email" class="form-control" id="email" ngModel email="true" [(ngModel)]="email" name="email">
 
-    <p>Click the button below to go to the instructions. </p>
-	<input type="image" alt="Submit" name="submit" src="./assets/start.png" />
-</form>
+	    <p >Click the button below to go to the instructions. </p>
+
+	    <div class="buttonHolder">
+			<input type="image" alt="Submit" name="submit" src="./assets/start.png" />
+		</div>		
+	</form>
 
 </div>
 
-<div class="footer">
-	<hr style="position:relative; top: -20px;">
-	Experiment designed by <a href="https://people.ceu.edu/christophe_heintz" style="text-decoration:none; color: black;">Christophe Heintz</a><br>
+<footer>
+	<hr style=" position:relative; top: 2px;">
+	<br>
+	Experiment designed by <a href="https://people.ceu.edu/christophe_heintz" style="text-decoration:none; color: black;">Christophe Heintz</a>
+	<br>
 	Website created by Renan Moreira © 2018 
 	<a href="https://github.com/RenanOm92/factorsAttractionFirebase">
 		<img src="./assets/github-logo.png" alt="github-logo"/>
 	</a>
-</div>
-
+</footer>

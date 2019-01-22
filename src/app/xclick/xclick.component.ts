@@ -25,8 +25,4 @@ export class XclickComponent{
 		this.router.navigateByUrl('/end');
 	}
 
-	btnClick() {
-        this.router.navigateByUrl('/end');
-	};
-
 }
