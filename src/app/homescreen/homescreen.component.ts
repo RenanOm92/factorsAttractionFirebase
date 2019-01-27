@@ -1,6 +1,6 @@
 import { Component, NgModule  } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule }   from '@angular/forms';
+import { NgForm }   from '@angular/forms';
 import { DataService } from "../data.service";
 
 
@@ -11,11 +11,18 @@ import { DataService } from "../data.service";
 })
 export class HomescreenComponent {
 
-	constructor(private router: Router, private dataService: DataService) { }
+	constructor(private router: Router, private dataService: DataService){}
 
 	email: string;
+	isValidFormSubmitted = null;
+	emailPattern = "^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$";	
 	
-	onSubmit() {
+	onSubmit(form: NgForm) {
+		this.isValidFormSubmitted = false;
+     	if (form.invalid) {
+        	return;
+     	}
+     	this.isValidFormSubmitted = true;
   		this.dataService.setEmail(this.email);
         this.router.navigateByUrl('/instructions');
 	};

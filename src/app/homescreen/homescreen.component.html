@@ -12,12 +12,21 @@
 
 	<br>
 
-	<form #emailForm="ngForm" (submit)="onSubmit()">
+	<form #emailForm="ngForm" (submit)="onSubmit(emailForm)">
 	    <label for="email">
 			For proceeding with the experiment, please enter your e-mail: 
 		</label>
 	    
-	    <input type="email" class="form-control" id="email" ngModel email="true" [(ngModel)]="email" name="email">
+	    <input type="email" [(ngModel)]="email" id="email" name="email" required [pattern]="emailPattern" #offEmail="ngModel">
+	    
+	    <div *ngIf="offEmail.errors && emailForm.submitted && !isValidFormSubmitted" [ngClass] = "'error'"> 
+	        <div *ngIf="offEmail.errors.required"> 
+			    <span style="color: red;">Email required.</span>
+		    </div>			   
+	        <div *ngIf="offEmail.errors.pattern"> 
+			    <span style="color: red;">Email not valid.</span>
+		    </div>	
+	    </div>
 
 	    <br><br>
 
