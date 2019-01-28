@@ -56,7 +56,7 @@ export class StartExperimentComponent implements OnInit {
 		this.dataService.setRandomPositionLeft(Math.floor(randomNumber1*this.screenWidth));
 
 		randomNumber2 = Math.random();
-		while((randomNumber1 < 0.05) || ( randomNumber1 > 0.45 && randomNumber1 < 0.55) || (randomNumber1 > 0.95)){
+		while((randomNumber2 < 0.05) || ( randomNumber2 > 0.45 && randomNumber2 < 0.55) || (randomNumber2 > 0.95)){
 			randomNumber2 = Math.random();
 		}
 		this.dataService.setRandomPositionTop(Math.floor(randomNumber2*this.screenHeight));
