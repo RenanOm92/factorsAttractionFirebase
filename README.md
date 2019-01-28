@@ -1,7 +1,10 @@
-This experiment have the purpose to test the hypothesis of attractions points on culture transmission.
+# Factors of attraction
+## A social experiment regarding the Cultural Attractor Theory (CAT)  
 
-All the data will be recorded with the only purpose of scientific studies.
+- This experiment have the purpose to test one hypothesis of cultural attraction points related to culture transmission using a simple interface where an X it will be displayed on the screen and the user will replicate the position of it after a fill-out screen.
 
-Experiment designed by Christophe Heintz
+- All the data will be recorded with the only purpose of scientific studies.
 
-Website created by Renan Moreira using Angular 5 and Firebase :)
+- Experiment designed by Christophe Heintz
+
+- Application developed by Renan Moreira using Angular 5 and hosted on Firebase https://factorsattraction.firebaseapp.com
