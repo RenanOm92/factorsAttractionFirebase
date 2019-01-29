@@ -41,12 +41,11 @@ export class EndComponent implements OnInit {
   	var userTop = this.userTop;
 
   	  const objectXPosition: dataPositionOfX = {email,screenSize,originalLeft,originalTop,userLeft,userTop};
-  	  //this.db.collection('items').doc('email').set(objectXPosition);
-      this.db.collection('1.0').add(objectXPosition);
+      this.db.collection('1.2').add(objectXPosition);
   }
 
   btnClick() {
-        this.router.navigateByUrl('/instructions');
+        this.router.navigateByUrl('/start');
 	};
 
 }
