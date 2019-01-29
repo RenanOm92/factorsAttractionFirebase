@@ -14,6 +14,7 @@ export class DataService {
   private email;
 
   private screenSize; // Width x Height
+  private device; // Touchscreen or mouse
 
 	setRandomPositionLeft(data){
   	this.randomPositionLeft = data;
@@ -61,5 +62,13 @@ export class DataService {
 
   getScreenSize(){
     return this.screenSize;
+  }
+
+  setDevice(data){
+    this.device = data;
+  }
+
+  getDevice(){
+    return this.device;
   }
 }
