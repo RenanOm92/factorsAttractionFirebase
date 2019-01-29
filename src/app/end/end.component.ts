@@ -48,7 +48,7 @@ export class EndComponent implements OnInit {
   }
 
   btnClick() {
-        this.router.navigateByUrl('/instructions');
+        this.router.navigateByUrl('/start');
 	};
 
 }
