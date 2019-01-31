@@ -16,6 +16,8 @@ export class StartExperimentComponent implements OnInit {
 	
 	leftPositionImage;
 	topPositionImage;
+
+	showFace = false;
 	
 	constructor(private router: Router, private dataService: DataService) {
 	}
@@ -27,10 +29,20 @@ export class StartExperimentComponent implements OnInit {
 
 		this.calculateX(); // Calculates the position of the X
 
+		this.conditionDecider(); // Check which condition should be shown
+
 		setTimeout(() => {
 	        this.router.navigate(['fillup']);
 	    }, 1000);  //1s
    
+	}
+
+	conditionDecider(){
+		var condition = this.dataService.getCondition();
+
+		if (condition == "Face"){
+			this.showFace = true;
+		}
 	}
 	
 	// Gets the size of the screen, also listen in case of changing the screen size.

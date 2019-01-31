@@ -12,6 +12,7 @@ export class DataService {
 	private userPositionTop; // Coordinate from the feedback of the user on the Y axes
 
   private email;
+  private condition; // Which condition is being played (calibration,face,spirals types)
 
   private screenSize; // Width x Height
   private device; // Touchscreen or mouse
@@ -70,5 +71,13 @@ export class DataService {
 
   getDevice(){
     return this.device;
+  }
+
+  setCondition(data){
+    return this.condition = data;
+  }
+
+  getCondition(){
+    return this.condition;
   }
 }
