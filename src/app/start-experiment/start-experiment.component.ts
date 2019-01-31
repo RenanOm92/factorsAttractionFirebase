@@ -27,9 +27,9 @@ export class StartExperimentComponent implements OnInit {
 	ngOnInit() {
 		this.onResize(); // Calls the method to get screenSize
 
-		this.calculateX(); // Calculates the position of the X
-
 		this.conditionDecider(); // Check which condition should be shown
+
+		this.calculateX(this.dataService.getCondition()); // Calculates the position of the X
 
 		setTimeout(() => {
 	        this.router.navigate(['fillup']);
@@ -54,21 +54,32 @@ export class StartExperimentComponent implements OnInit {
       this.dataService.setScreenSize(this.screenWidth.toString()+"x"+this.screenHeight.toString());
 	}
 
-	calculateX(){
+	calculateX(condition){ // calculate the position of X, based on the type of event
 		var randomNumber1;
 		var randomNumber2;
+		var lowerLimit = 0.05; // Default limits of generation of X 
+		var middleLimit1 = 0.45;
+		var middleLimit2 = 0.55;
+		var uperLimit = 0.95;
+
+		if (condition == "Face"){
+			lowerLimit = 0.30; // For the face, I want the X to be more centrelized
+			middleLimit1 = 0.49;
+			middleLimit2 = 0.51;
+			uperLimit = 0.70;
+		}
 
 		// Generates the position of the X, always careful to not be too close to the edges or the center.
 		// The randomNumber will always be between 0 and 1 and it will be multiplied by the screen size
 		// to generate the coordinates
 		randomNumber1 = Math.random();
-		while((randomNumber1 < 0.05) || ( randomNumber1 > 0.45 && randomNumber1 < 0.55) || (randomNumber1 > 0.95)){
+		while((randomNumber1 < lowerLimit) || ( randomNumber1 > middleLimit1 && randomNumber1 < middleLimit2) || (randomNumber1 > uperLimit)){
 			randomNumber1 = Math.random();
 		}
 		this.dataService.setRandomPositionLeft(Math.floor(randomNumber1*this.screenWidth));
 
 		randomNumber2 = Math.random();
-		while((randomNumber2 < 0.05) || ( randomNumber2 > 0.45 && randomNumber2 < 0.55) || (randomNumber2 > 0.95)){
+		while((randomNumber2 < lowerLimit) || ( randomNumber2 > middleLimit1 && randomNumber2 < middleLimit2) || (randomNumber2 > uperLimit)){
 			randomNumber2 = Math.random();
 		}
 		this.dataService.setRandomPositionTop(Math.floor(randomNumber2*this.screenHeight));
