@@ -1,4 +1,7 @@
-<div class = "imgbox" >
+<div class = "imgbox" *ngIf="showClickHereButton == false">
 	<img *ngIf="showSpiral" class="center-fit" src="./assets/spiral.gif">
 </div>
+
+<input *ngIf="showClickHereButton" type="image" (click)="btnClick();" class="centered" src="./assets/click_here.png">
+
 

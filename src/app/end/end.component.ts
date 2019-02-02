@@ -52,10 +52,11 @@ export class EndComponent implements OnInit {
   }
 
   generateNewCondition(){
-    var Totalconditions = 3;
+    var Totalconditions = 4;
     // 0 = calibration/default nothing with black fillout
     // 1 = face on the start and end background
     // 2 = spiral on the middle of the screen fill-out
+    // 3 = click here button on the fill-out
     var conditionToBePlayed = this.getRandomInt(0,Totalconditions-1);
 
    switch (conditionToBePlayed) {
@@ -67,6 +68,9 @@ export class EndComponent implements OnInit {
        break;
      case 2:
        this.dataService.setCondition("Spiral")
+       break;
+     case 3:
+       this.dataService.setCondition("ClickHere")
        break;
     }
   }
