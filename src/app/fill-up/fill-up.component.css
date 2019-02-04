@@ -22,12 +22,20 @@
 
 .bottomLeft {
   position: fixed;
-  top: 85%;
-  left: 10%;
+  bottom: 20%;
+  left: 20%;
+  max-height: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
 }
 
 .topRight {
   position: fixed;
-  top: 15%;
-  left: 85%;
+  top: 20%;
+  right: 20%;
+  max-height: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
 }
