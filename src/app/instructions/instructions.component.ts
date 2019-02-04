@@ -16,11 +16,12 @@ export class InstructionsComponent implements OnInit{
   };
 
   generateCondition(){
-  	var Totalconditions = 4;
+  	var Totalconditions = 5;
   	// 0 = calibration/default nothing with black fillout
   	// 1 = face on the start and end background
   	// 2 = spiral on the middle of the screen fill-out
-    // 3 = click here button on the fill-out
+    // 3 = click here button on the fill-out on the bottom left of the screen
+    // 4 = click here button on the fill-out on the top right of the screen
   	var conditionToBePlayed = this.getRandomInt(0,Totalconditions-1);
 
  	switch (conditionToBePlayed) {
@@ -34,7 +35,10 @@ export class InstructionsComponent implements OnInit{
  			this.dataService.setCondition("Spiral")
  			break;
     case 3:
-      this.dataService.setCondition("ClickHere")
+      this.dataService.setCondition("ClickHereBottomLeft")
+      break;
+    case 4:
+      this.dataService.setCondition("ClickHereTopRight")
       break;
  	  }
   }

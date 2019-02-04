@@ -1,10 +1,10 @@
 *{
 	margin: 0;
-    padding: 0;
+  padding: 0;
+  background:rgba(0,0,0,1); /* black background */
 }
-.imgbox {
+.nocursor {
     cursor: none;
-    background:rgba(0,0,0,1); /* black background */
     display: grid;
     height: 100%;
 }
@@ -15,10 +15,19 @@
     margin: auto;
 }
 
-.centered {
+.wholepageBlack{
+  height: 100%;
+  width: 100%;
+}
+
+.bottomLeft {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  /* bring your own prefixes */
-  transform: translate(-50%, -50%);
+  top: 85%;
+  left: 10%;
+}
+
+.topRight {
+  position: fixed;
+  top: 15%;
+  left: 85%;
 }

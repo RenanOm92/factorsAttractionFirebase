@@ -1,7 +1,10 @@
-<div class = "imgbox" *ngIf="showClickHereButton == false">
+<div class = "nocursor" *ngIf="!showClickHereButtonBottomleft && !showClickHereButtonTopRight">
 	<img *ngIf="showSpiral" class="center-fit" src="./assets/spiral.gif">
 </div>
 
-<input *ngIf="showClickHereButton" type="image" (click)="btnClick();" class="centered" src="./assets/click_here.png">
+<div class="wholepageBlack">
+	<input *ngIf="showClickHereButtonBottomleft" type="image" (click)="btnClick();" class="bottomLeft" src="./assets/click_here.png">
+	<input *ngIf="showClickHereButtonTopRight" type="image" (click)="btnClick();" class="topRight" src="./assets/click_here.png">
+</div>
 
 

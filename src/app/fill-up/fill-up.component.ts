@@ -12,7 +12,8 @@ export class FillUpComponent implements OnInit {
   constructor(private router: Router, private dataService: DataService) { }
 
   showSpiral = false;
-  showClickHereButton = false;
+  showClickHereButtonBottomleft = false;
+  showClickHereButtonTopRight = false;
 
   ngOnInit() {
   	this.conditionDecider(); // Check which condition should be shown
@@ -25,9 +26,11 @@ export class FillUpComponent implements OnInit {
 			this.showSpiral = true;
 		}
 
-		if (condition == "ClickHere"){
-			this.showClickHereButton = true;
-		}else {
+		if (condition == "ClickHereBottomLeft"){
+			this.showClickHereButtonBottomleft = true;
+		}else if (condition == "ClickHereTopRight"){
+      this.showClickHereButtonTopRight = true;
+    }else {
 			setTimeout(() => {
 	       		this.router.navigate(['xclick']);
 			}, 500);  //0.5s		
