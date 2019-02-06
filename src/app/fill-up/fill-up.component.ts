@@ -11,7 +11,9 @@ export class FillUpComponent implements OnInit {
 
   constructor(private router: Router, private dataService: DataService) { }
 
-  showSpiral = false;
+  showSpiralLeft = false;
+  showSpiralCenter = false;
+  showSpiralRight = false;
   showClickHereButtonBottomleft = false;
   showClickHereButtonTopRight = false;
 
@@ -22,9 +24,13 @@ export class FillUpComponent implements OnInit {
   conditionDecider(){
 		var condition = this.dataService.getCondition();
 
-		if (condition == "Spiral"){
-			this.showSpiral = true;
-		}
+		if (condition == "SpiralCenter"){
+			this.showSpiralCenter = true;
+		}else if (condition == "SpiralLeft"){
+      this.showSpiralLeft = true;
+    }else if (condition == "SpiralLeft"){
+      this.showSpiralRight = true;
+    }
 
 		if (condition == "ClickHereBottomLeft"){
 			this.showClickHereButtonBottomleft = true;

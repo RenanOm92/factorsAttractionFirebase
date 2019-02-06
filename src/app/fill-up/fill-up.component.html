@@ -1,8 +1,23 @@
+
+
 <div class = "nocursor" *ngIf="!showClickHereButtonBottomleft && !showClickHereButtonTopRight">
-	<img *ngIf="showSpiral" class="center-fit" src="./assets/spiral.gif">
+	<div *ngIf="showSpiralLeft || showSpiralRight">
+		<div id = "leftSpiral">
+			a
+			<img *ngIf="showSpiralLeft" class="redistribute" src="./assets/spiral.gif">
+		</div>
+		<div id = "rightSpiral">
+			a
+			<img *ngIf="showSpiralRight" class="redistribute" src="./assets/spiral.gif">
+		</div>
+	</div>
+
+	<div class = "nocursor" *ngIf="showSpiralCenter" >
+		<img class="center-fit" src="./assets/spiral.gif">
+	</div>
 </div>
 
-<div class="wholepageBlack">
+<div class="wholepageBlack" *ngIf="showClickHereButtonBottomleft || showClickHereButtonTopRight">
 	<input *ngIf="showClickHereButtonBottomleft" type="image" (click)="btnClick();" class="bottomLeft" src="./assets/click_here.png">
 	<input *ngIf="showClickHereButtonTopRight" type="image" (click)="btnClick();" class="topRight" src="./assets/click_here.png">
 </div>

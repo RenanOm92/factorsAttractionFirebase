@@ -1,5 +1,5 @@
 *{
-	margin: 0;
+  margin: 0;
   padding: 0;
   background:rgba(0,0,0,1); /* black background */
 }
@@ -8,10 +8,30 @@
     display: grid;
     height: 100%;
 }
+#leftSpiral {
+  position: relative;
+  width: 50%;
+  float: left;
+  height: 100%;
+}
+
+#rightSpiral{
+  position: relative;
+  width: 50%;
+  float: left;
+  height: 100%;
+
+}
+
+.redistribute {
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+}
 
 .center-fit {
-    max-width: 100%;
-    max-height: 100vh;
+    max-width: 50%;
+    max-height: 50vh;
     margin: auto;
 }
 
