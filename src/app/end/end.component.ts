@@ -28,16 +28,16 @@ export class EndComponent implements OnInit {
   }
 
   ngOnInit() {
-	  this.email = this.dataService.getEmail();
+	this.email = this.dataService.getEmail();
     this.device = this.dataService.getDevice();
     this.screenSize = this.dataService.getScreenSize();
     this.condition = this.dataService.getCondition();
     this.originalLeft = this.dataService.getRandomPositionLeft().toString()+'px';
-	  this.originalTop = this.dataService.getRandomPositionTop().toString()+'px';
-	  this.userLeft = this.dataService.getUserPositionLeft().toString()+'px';
-	  this.userTop = this.dataService.getUserPositionTop().toString()+'px';
+	this.originalTop = this.dataService.getRandomPositionTop().toString()+'px';
+	this.userLeft = this.dataService.getUserPositionLeft().toString()+'px';
+	this.userTop = this.dataService.getUserPositionTop().toString()+'px';
 
-	  var email = this.email;
+	var email = this.email;
     var device = this.device;
     var screenSize = this.screenSize;
     var condition = this.condition;
@@ -46,9 +46,9 @@ export class EndComponent implements OnInit {
   	var coord_user_left = this.userLeft;
   	var coord_user_top = this.userTop;
 
-  	  const objectXPosition: dataPositionOfX = {email,device,screenSize,condition,coord_original_left,coord_original_top,coord_user_left,coord_user_top};
-      this.db.collection('1.2').add(objectXPosition);
-      this.generateNewCondition();
+	const objectXPosition: dataPositionOfX = {email,device,screenSize,condition,coord_original_left,coord_original_top,coord_user_left,coord_user_top};
+	this.db.collection('1.3').add(objectXPosition);
+	this.generateNewCondition();
   }
 
   generateNewCondition(){
