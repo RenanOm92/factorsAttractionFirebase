@@ -1,11 +1,7 @@
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
-import math 
-
-def calculateDistance(x1,y1,x2,y2):  
-     dist = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)  
-     return dist  
+import math  
 
 ### LOAD DATA INTO DATAFRAME
 
@@ -78,71 +74,127 @@ df['coord_user_Y_relative'] = df['coord_user_Y'] / df['height']
 
 #df = df[df.version == '1.3']
 
-
-
 #print(df.groupby(['email']).count())
 
 #print(df)
 
-### DATA CLEANING OF NOISE
+### DATA CLEANING OF NOISE - Based on the data distribution, Clean all the points where the difference from original and user (heigh and width) is more than 10% from the screen size
 
-#to do
+df_cleaned = df.copy()
 
-#plt.scatter(df.coord_original_left_relative,df.coord_user_left_relative, c='yellow')
-#plt.scatter(df.coord_original_top_relative,df.coord_user_top_relative, c='blue', alpha=0.5)
-#plt.show()
+# plt.scatter(df_cleaned.coord_original_X_relative,df_cleaned.coord_user_X_relative, c='green')
+# plt.scatter(df_cleaned.coord_original_Y_relative,df_cleaned.coord_user_Y_relative, c='green')
+# plt.show()
+
+print("Interactions before cleaning: "+str(df_cleaned.shape[0]))
+
+df_cleaned = df_cleaned[ (abs(df_cleaned.coord_original_X_relative - df_cleaned.coord_user_X_relative)) <= 0.1]
+df_cleaned = df_cleaned[ (abs(df_cleaned.coord_original_Y_relative - df_cleaned.coord_user_Y_relative)) <= 0.1]
+
+# plt.scatter(df_cleaned.coord_original_X_relative,df_cleaned.coord_user_X_relative, c='green')
+# plt.scatter(df_cleaned.coord_original_Y_relative,df_cleaned.coord_user_Y_relative, c='green')
+# plt.show()
+
+print("Interactions after cleaning: "+str(df_cleaned.shape[0]))
+
+
+def calculateDistanceTwoPoints(x1,y1,x2,y2):  
+     dist = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)  
+     return dist
+
+def averageDistanceOriginalUser(dataframe):
+	dataframe['distance_between_original_user_in_percentage'] =  dataframe.apply(lambda x: calculateDistanceTwoPoints(x.coord_original_X_relative, x.coord_original_Y_relative, x.coord_user_X_relative, x.coord_user_Y_relative) * 100, axis = 1)
+	averageDistance = dataframe['distance_between_original_user_in_percentage'].mean()
+	print("Average distance from Original position to User position: "+str(averageDistance)+ '%')
 
 ### CALCULATION FACTOR OF ATTRACTION POSITION OF FACE
+def calculateFactorFace(dataframe):
+	# Resolution of the image of the face
+	width_face_image_original = 1280
+	height_face_image_original = 720
+	ratio_face_image1 = width_face_image_original / height_face_image_original
+	ratio_face_image2 = height_face_image_original / width_face_image_original
+	# Ratio of the screen size for each interaction
+	dataframe['ratio_screen_size'] = dataframe['width'] / dataframe['height']
 
-ratio_face_image1 = 1280/720
-ratio_face_image2 = 720/1280
+	# Check if the image size is dimensioned by the height or width
+	dataframe['axes_to_calculate_img_size'] = dataframe['ratio_screen_size'].apply(lambda x: 'X' if (x < ratio_face_image1) else 'Y')
 
-def calculateFaceFactor(df):
-	df['ratio_screen_size'] = df['width'] / df['height']
+	# Calculate the Width and Height of the image face
+	dataframe['img_size_width'] = dataframe.apply(lambda x: x['width'] if (x['axes_to_calculate_img_size'] == 'X') else (x['height'] * ratio_face_image1), axis=1)
+	dataframe['img_size_height'] = dataframe.apply(lambda x: (x['width'] * ratio_face_image2) if (x['axes_to_calculate_img_size'] == 'X') else x['height'], axis=1)
 
-	df['axes_to_calculate_img_size'] = df.apply(lambda x: 'X' if (x['ratio_screen_size'] < ratio_face_image1) else 'Y')
+	# Factor of attraction in the % of the image
+	img_factor_X = 0.55
+	img_factor_Y = 0.73
 
-	df['img_size_width'] = df.apply(lambda x: x['width'] if (x['axes_to_calculate_img_size'] == 'X') else (x['height'] * ratio_face_image1))
-	df['img_size_height'] = df.apply(lambda x: (x['width'] * ratio_face_image2) if (x['axes_to_calculate_img_size'] == 'X') else x['height'])
-
-	df['factor_face_X'] = 0.55
-
+	# Calculate the factor of attraction of the missing eye in relation with the % of the screen (widht and height)
 	#((screen size - img size) / 2  + % img size) / screen size
+	dataframe['factor_X'] = (((dataframe['width'] - dataframe['img_size_width']) / 2) + (img_factor_X * dataframe['img_size_width'])) / dataframe['width']
+	dataframe['factor_Y'] = (((dataframe['height'] - dataframe['img_size_height']) / 2) + (img_factor_X * dataframe['img_size_height'])) / dataframe['height']
 
+	return dataframe
 
+def calculateFactorButtonBottomLeft(dataframe):
+	width_button_image_original = 87
+	height_button_image_original = 32
 
+	dataframe['factor_X'] = (dataframe['width'] * 0.2 + (width_button_image_original / 2 )) / dataframe['width']
+	dataframe['factor_Y'] = (dataframe['height'] * 0.2 + (height_button_image_original / 2 )) / dataframe['height']
 
+	return dataframe
+
+def calculateFactorButtonTopRight(dataframe):
+	width_button_image_original = 87
+	height_button_image_original = 32
+
+	dataframe['factor_X'] = (dataframe['width'] * 0.8 - (width_button_image_original / 2 )) / dataframe['width']
+	dataframe['factor_Y'] = (dataframe['height'] * 0.8 - (height_button_image_original / 2 )) / dataframe['height']
+
+	return dataframe
+
+def calculateDistanceFromFactorAndPlotPoints(dataframe,threshold):
+
+	dataframe = dataframe[dataframe.coord_user_X_relative >= (dataframe.factor_X - threshold)] 
+	dataframe = dataframe[dataframe.coord_user_X_relative <= (dataframe.factor_X + threshold)]
+	dataframe = dataframe[dataframe.coord_user_Y_relative >= (dataframe.factor_Y - threshold)]
+	dataframe = dataframe[dataframe.coord_user_Y_relative <= (dataframe.factor_Y + threshold)]
+
+	dataframe['distance_factor_to_original'] =  dataframe.apply(lambda loop: calculateDistanceTwoPoints(loop.factor_X, loop.factor_Y, loop['coord_original_X_relative'], loop['coord_original_Y_relative']), axis = 1)
+	dataframe['distance_factor_to_user'] = dataframe.apply(lambda loop: calculateDistanceTwoPoints(loop.factor_X, loop.factor_Y, loop['coord_user_X_relative'], loop['coord_user_Y_relative']), axis = 1)
+	dataframe['distance_difference_in_percentage'] = ( dataframe['distance_factor_to_original'] - dataframe['distance_factor_to_user'] ) * 100
+
+	df_closer = dataframe.copy()
+	df_farther = dataframe.copy()
+	df_closer = df_closer[df_closer.distance_difference_in_percentage >= 0]
+	df_farther = df_farther[df_farther.distance_difference_in_percentage < 0]
+
+	print("Points which got closer to the attraction factor: "+str(df_closer.shape[0]))
+	print("Points which got farther to the attraction factor: "+str(df_farther.shape[0]))
+	averageDistanceOriginalUser(dataframe)
+
+	plt.scatter(df_farther.coord_user_X_relative,df_farther.coord_user_Y_relative, c='red', alpha=0.9)
+	plt.scatter(df_closer.coord_user_X_relative,df_closer.coord_user_Y_relative, c='green', alpha=0.9)
+	plt.scatter(dataframe.factor_X,dataframe.factor_Y, c='blue')
+	plt.xlim(0,1)
+	plt.ylim(0,1)
+	plt.show()
+
+	
 
 ### CALCULATION points
 
-df_ClickHereBottomLeft = df[df.condition == 'ClickHereBottomLeft']
+df_Calibration = df_cleaned[df_cleaned.condition == 'Calibration']
+averageDistanceOriginalUser(df_Calibration)
 
-threshold = 0.15
-button_X = 0.2
-button_Y = 0.2
+df_ClickHereBottomLeft = df_cleaned[df_cleaned.condition == 'ClickHereBottomLeft']
+df_ClickHereBottomLeft = calculateFactorButtonBottomLeft(df_ClickHereBottomLeft)
+calculateDistanceFromFactorAndPlotPoints(df_ClickHereBottomLeft,0.15)
 
-df_ClickHereBottomLeft = df_ClickHereBottomLeft[df_ClickHereBottomLeft.coord_user_X_relative >= (button_X - threshold)] 
-df_ClickHereBottomLeft = df_ClickHereBottomLeft[df_ClickHereBottomLeft.coord_user_X_relative <= (button_X + threshold)]
-df_ClickHereBottomLeft = df_ClickHereBottomLeft[df_ClickHereBottomLeft.coord_user_Y_relative >= (button_Y - threshold)]
-df_ClickHereBottomLeft = df_ClickHereBottomLeft[df_ClickHereBottomLeft.coord_user_Y_relative <= (button_Y + threshold)]
+df_ClickHereTopRight = df_cleaned[df_cleaned.condition == 'ClickHereTopRight']
+df_ClickHereTopRight = calculateFactorButtonTopRight(df_ClickHereTopRight)
+calculateDistanceFromFactorAndPlotPoints(df_ClickHereTopRight,0.15)
 
-df_ClickHereBottomLeft['distance_factor_to_original'] =  df_ClickHereBottomLeft.apply(lambda x: calculateDistance(button_X,button_Y,x['coord_original_X_relative'],x['coord_original_Y_relative']), axis = 1)
-df_ClickHereBottomLeft['distance_factor_to_user'] = df_ClickHereBottomLeft.apply(lambda x: calculateDistance(button_X,button_Y,x['coord_user_X_relative'],x['coord_user_Y_relative']), axis = 1)
-df_ClickHereBottomLeft['distance_difference'] = df_ClickHereBottomLeft['distance_factor_to_original'] - df_ClickHereBottomLeft['distance_factor_to_user']
-df_ClickHereBottomLeft['distance_difference_in_percentage'] = df_ClickHereBottomLeft['distance_difference'] * 100
-
-df_closer = df_ClickHereBottomLeft.copy()
-df_farther = df_ClickHereBottomLeft.copy()
-df_closer = df_closer[df_closer.distance_difference >= 0]
-df_farther = df_farther[df_farther.distance_difference < 0]
-
-print(df_ClickHereBottomLeft.distance_difference_in_percentage)
-
-plt.scatter(df_closer.coord_user_X_relative,df_closer.coord_user_Y_relative, c='green')
-plt.scatter(df_farther.coord_user_X_relative,df_farther.coord_user_Y_relative, c='red')
-plt.scatter(button_X,button_Y, c='blue')
-plt.xlim(0,1)
-plt.ylim(0,1)
-plt.show()
-
-
+df_Face = df_cleaned[df_cleaned.condition == 'Face']
+df_Face = calculateFactorFace(df_Face)
+calculateDistanceFromFactorAndPlotPoints(df_Face,0.15)
