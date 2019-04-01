@@ -153,6 +153,40 @@ def calculateFactorButtonTopRight(dataframe):
 
 	return dataframe
 
+def calculateFactorSpiralLeft(dataframe):
+	# Resolution of the image of the face
+	width_spiral_image_original = 720
+	height_spiral_image_original = 720
+
+	# Calculate the Width and Height of the image spiral
+	dataframe['img_size_height'] = dataframe['width'] / 2
+
+	# Factor of attraction in the % of the image, always at the center of the spiral
+	img_factor_Y = 0.5
+
+	# Calculate the factor of attraction of center of the spiral in relation with the % of the screen (widht and height)
+	dataframe['factor_X'] = 0.25 # the spiral left is always covering the left half size of the screen
+	dataframe['factor_Y'] = (dataframe['height'] - (dataframe['img_size_height'] * img_factor_Y)) / dataframe['height']
+
+	return dataframe
+
+def calculateFactorSpiralCenter(dataframe):
+	# Resolution of the image of the face
+	width_spiral_image_original = 720
+	height_spiral_image_original = 720
+
+	# Calculate the Width and Height of the image spiral
+	dataframe['img_size_height'] = dataframe['width'] / 2
+
+	# Factor of attraction in the % of the image, always at the center of the spiral
+	img_factor_Y = 0.5
+
+	# Calculate the factor of attraction of center of the spiral in relation with the % of the screen (widht and height)
+	dataframe['factor_X'] = 0.5 # the spiral left is always covering the left half size of the screen
+	dataframe['factor_Y'] = (((dataframe['height'] - dataframe['img_size_height']) / 2) + (dataframe['img_size_height'] * img_factor_Y)) / dataframe['height']
+
+	return dataframe
+
 def calculateDistanceFromFactorAndPlotPoints(dataframe,threshold):
 
 	dataframe = dataframe[dataframe.coord_user_X_relative >= (dataframe.factor_X - threshold)] 
@@ -198,3 +232,12 @@ calculateDistanceFromFactorAndPlotPoints(df_ClickHereTopRight,0.15)
 df_Face = df_cleaned[df_cleaned.condition == 'Face']
 df_Face = calculateFactorFace(df_Face)
 calculateDistanceFromFactorAndPlotPoints(df_Face,0.15)
+
+df_SpiralLeft = df_cleaned[df_cleaned.condition == 'SpiralLeft']
+df_SpiralLeft = calculateFactorSpiralLeft(df_SpiralLeft)
+calculateDistanceFromFactorAndPlotPoints(df_SpiralLeft,0.15)
+
+df_SpiralCenter = df_cleaned[df_cleaned.condition == 'SpiralCenter']
+df_SpiralCenter = calculateFactorSpiralCenter(df_SpiralCenter)
+calculateDistanceFromFactorAndPlotPoints(df_SpiralCenter,0.15)
+
