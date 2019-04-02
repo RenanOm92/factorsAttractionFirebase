@@ -70,6 +70,8 @@ df['coord_user_X_relative'] = df['coord_user_X'] / df['width']
 df['coord_original_Y_relative'] = df['coord_original_Y'] / df['height']
 df['coord_user_Y_relative'] = df['coord_user_Y'] / df['height']
 
+df['ratio'] = df['width'] / df['height']
+print(df['ratio'])
 #df = df[['email','device','condition','coord_original_X_relative','coord_user_X_relative','coord_original_Y_relative','coord_user_Y_relative', 'version']]
 
 #df = df[df.version == '1.3']
