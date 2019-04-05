@@ -71,12 +71,12 @@ df['coord_original_Y_relative'] = df['coord_original_Y'] / df['height']
 df['coord_user_Y_relative'] = df['coord_user_Y'] / df['height']
 
 df['ratio'] = df['width'] / df['height']
-print(df['ratio'])
+
 #df = df[['email','device','condition','coord_original_X_relative','coord_user_X_relative','coord_original_Y_relative','coord_user_Y_relative', 'version']]
 
 #df = df[df.version == '1.3']
 
-#print(df.groupby(['email']).count())
+print("Number of unique e-mails: "+str(df.groupby(['email']).count().shape[0]))
 
 #print(df)
 
@@ -104,8 +104,12 @@ def calculateDistanceTwoPoints(x1,y1,x2,y2):
      dist = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)  
      return dist
 
-def averageDistanceOriginalUser(dataframe):
+def calculateDistanceOriginalUser(dataframe):
 	dataframe['distance_between_original_user_in_percentage'] =  dataframe.apply(lambda x: calculateDistanceTwoPoints(x.coord_original_X_relative, x.coord_original_Y_relative, x.coord_user_X_relative, x.coord_user_Y_relative) * 100, axis = 1)
+	return dataframe[['condition', 'distance_between_original_user_in_percentage']]
+
+def averageDistanceOriginalUser(dataframe):
+	dataframe = calculateDistanceOriginalUser(dataframe)
 	averageDistance = dataframe['distance_between_original_user_in_percentage'].mean()
 	print("Average distance from Original position to User position: "+str(averageDistance)+ '%')
 
@@ -205,41 +209,80 @@ def calculateDistanceFromFactorAndPlotPoints(dataframe,threshold):
 	df_closer = df_closer[df_closer.distance_difference_in_percentage >= 0]
 	df_farther = df_farther[df_farther.distance_difference_in_percentage < 0]
 
-	print("Points which got closer to the attraction factor: "+str(df_closer.shape[0]))
-	print("Points which got farther to the attraction factor: "+str(df_farther.shape[0]))
-	averageDistanceOriginalUser(dataframe)
+	closer_quantity = str(df_closer.shape[0])
+	farther_quantity = str(df_farther.shape[0])
 
-	plt.scatter(df_farther.coord_user_X_relative,df_farther.coord_user_Y_relative, c='red', alpha=0.9)
-	plt.scatter(df_closer.coord_user_X_relative,df_closer.coord_user_Y_relative, c='green', alpha=0.9)
-	plt.scatter(dataframe.factor_X,dataframe.factor_Y, c='blue')
+	plt.scatter(df_closer.coord_user_X_relative,df_closer.coord_user_Y_relative, c='green', alpha=0.9, label='Closer: '+closer_quantity)
+	plt.scatter(df_farther.coord_user_X_relative,df_farther.coord_user_Y_relative, c='red', alpha=0.9, label= 'Farther: '+ farther_quantity)
+	plt.scatter(dataframe.factor_X,dataframe.factor_Y, c='blue', label= 'Factor of attraction')
+	plt.legend()
 	plt.xlim(0,1)
 	plt.ylim(0,1)
+
+	print("Points which got closer to the attraction factor: "+closer_quantity)
+	print("Points which got farther to the attraction factor: "+farther_quantity)
+	averageDistanceOriginalUser(dataframe)
+
 	plt.show()
 
+	return dataframe
 	
 
 ### CALCULATION points
+df_anova = pd.DataFrame()
+threshold = 0.15
 
+print("\n ----------- \n")
+print("Calibration")
 df_Calibration = df_cleaned[df_cleaned.condition == 'Calibration']
 averageDistanceOriginalUser(df_Calibration)
+df_anova = df_anova.append(calculateDistanceOriginalUser(df_Calibration))
+print("\n ----------- \n")
 
+print("ClickHereBottomLeft")
 df_ClickHereBottomLeft = df_cleaned[df_cleaned.condition == 'ClickHereBottomLeft']
 df_ClickHereBottomLeft = calculateFactorButtonBottomLeft(df_ClickHereBottomLeft)
-calculateDistanceFromFactorAndPlotPoints(df_ClickHereBottomLeft,0.15)
+df_ClickHereBottomLeft = calculateDistanceFromFactorAndPlotPoints(df_ClickHereBottomLeft, threshold)
+df_anova = df_anova.append(calculateDistanceOriginalUser(df_ClickHereBottomLeft))
+print("\n ----------- \n")
 
+print("ClickHereTopRight")
 df_ClickHereTopRight = df_cleaned[df_cleaned.condition == 'ClickHereTopRight']
 df_ClickHereTopRight = calculateFactorButtonTopRight(df_ClickHereTopRight)
-calculateDistanceFromFactorAndPlotPoints(df_ClickHereTopRight,0.15)
+df_ClickHereTopRight = calculateDistanceFromFactorAndPlotPoints(df_ClickHereTopRight, threshold)
+df_anova = df_anova.append(calculateDistanceOriginalUser(df_ClickHereTopRight))
+print("\n ----------- \n")
 
+print("Face")
 df_Face = df_cleaned[df_cleaned.condition == 'Face']
 df_Face = calculateFactorFace(df_Face)
-calculateDistanceFromFactorAndPlotPoints(df_Face,0.15)
+df_Face = calculateDistanceFromFactorAndPlotPoints(df_Face,threshold)
+df_anova = df_anova.append(calculateDistanceOriginalUser(df_Face))
+print("\n ----------- \n")
 
+print("SpiralLeft")
 df_SpiralLeft = df_cleaned[df_cleaned.condition == 'SpiralLeft']
 df_SpiralLeft = calculateFactorSpiralLeft(df_SpiralLeft)
-calculateDistanceFromFactorAndPlotPoints(df_SpiralLeft,0.15)
+df_SpiralLeft = calculateDistanceFromFactorAndPlotPoints(df_SpiralLeft,threshold)
+df_anova = df_anova.append(calculateDistanceOriginalUser(df_SpiralLeft))
+print("\n ----------- \n")
 
+print("SpiralCenter")
 df_SpiralCenter = df_cleaned[df_cleaned.condition == 'SpiralCenter']
 df_SpiralCenter = calculateFactorSpiralCenter(df_SpiralCenter)
-calculateDistanceFromFactorAndPlotPoints(df_SpiralCenter,0.15)
+df_SpiralCenter = calculateDistanceFromFactorAndPlotPoints(df_SpiralCenter,threshold)
+df_anova = df_anova.append(calculateDistanceOriginalUser(df_SpiralCenter))
+print("\n ----------- \n")
 
+df_anova.boxplot('distance_between_original_user_in_percentage', by='condition')
+plt.show()
+
+
+import statsmodels.api as sm
+from statsmodels.formula.api import ols
+
+mod = ols('distance_between_original_user_in_percentage ~ condition', data = df_anova).fit()
+aov_table = sm.stats.anova_lm(mod, typ=2)
+print(aov_table)
+
+df_anova.to_csv('data_filtered_factors_15.csv')
