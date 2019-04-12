@@ -121,7 +121,7 @@ def calculateDistanceTwoPoints(x1,y1,x2,y2):
 
 def calculateDistanceOriginalUser(dataframe):
 	dataframe['distance_between_original_user_in_percentage'] =  dataframe.apply(lambda x: calculateDistanceTwoPoints(x.coord_original_X_relative, x.coord_original_Y_relative, x.coord_user_X_relative, x.coord_user_Y_relative) * 100, axis = 1)
-	return dataframe[['condition', 'distance_between_original_user_in_percentage']]
+	return dataframe[['condition', 'distance_between_original_user_in_percentage', 'device']]
 
 def averageDistanceOriginalUser(dataframe):
 	dataframe = calculateDistanceOriginalUser(dataframe)
@@ -250,6 +250,18 @@ def calculateDistanceFromFactorAndPlotPoints(dataframe,threshold,title):
 	return dataframe
 	
 
+### Calculation of difference between mouse and touchescreen
+df_aux = df_cleaned.copy()
+print(df_aux.groupby(['device']).count())
+df_aux = calculateDistanceOriginalUser(df_aux)
+print(df_aux.groupby(['device']).mean())
+df_mouse = df_aux[df_aux.device == 'Mouse']
+df_mouse = df_mouse[df_mouse.condition != 'Calibration']
+print(df_mouse.distance_between_original_user_in_percentage.mean())
+df_touch = df_aux[df_aux.device == 'Touchscreen']
+df_touch = df_touch[df_touch.condition != 'Calibration']
+print(df_touch.distance_between_original_user_in_percentage.mean())
+
 ### CALCULATION points
 df_anova = pd.DataFrame()
 threshold = 0.15
@@ -329,3 +341,4 @@ esq_sm = aov_table['sum_sq'][0]/(aov_table['sum_sq'][0]+aov_table['sum_sq'][1])
 print("eta squared: "+str(esq_sm))
 
 # df_anova.to_csv('data_2way_15threshold.csv')
+
