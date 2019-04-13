@@ -2,6 +2,8 @@ import json
 import pandas as pd
 import matplotlib.pyplot as plt
 import math  
+import seaborn as sns
+import numpy as np
 
 ### LOAD DATA INTO DATAFRAME
 
@@ -82,38 +84,35 @@ print("Number of unique e-mails: "+str(df.groupby(['email']).count().shape[0]))
 
 ### DATA CLEANING OF NOISE - Based on the data distribution, Clean all the points where the difference from original and user (heigh and width) is more than 10% from the screen size
 
-df_cleaned = df.copy()
+# df_cleaned = df.copy()
 
 
-plt.scatter(df_cleaned.coord_original_X_relative,df_cleaned.coord_user_X_relative, c='#2bbf42', label="Width", alpha=0.8)
-plt.scatter(df_cleaned.coord_original_Y_relative,df_cleaned.coord_user_Y_relative, c='#378743', label="Height", alpha=0.8)
-plt.xlabel('Original cross position ')
-plt.ylabel('User feedback cross position')
-#Relation between original and user feedback cross position for Width and Height relative to the screen size with noise
-plt.legend()
-plt.grid(b=True, alpha= 0.1)
-plt.title("Noisy data")
-plt.show()
+# plt.scatter(df_cleaned.coord_original_X_relative,df_cleaned.coord_user_X_relative, c='#2bbf42', label="Width", alpha=0.8)
+# plt.scatter(df_cleaned.coord_original_Y_relative,df_cleaned.coord_user_Y_relative, c='#378743', label="Height", alpha=0.8)
+# plt.xlabel('Original cross position ')
+# plt.ylabel('User feedback cross position')
+# #Relation between original and user feedback cross position for Width and Height relative to the screen size with noise
+# plt.legend()
+# plt.grid(b=True, alpha= 0.1)
+# plt.title("Noisy data")
+# plt.show()
 
-print("Interactions before cleaning: "+str(df_cleaned.shape[0]))
+# print("Interactions before cleaning: "+str(df_cleaned.shape[0]))
 
-df_cleaned = df_cleaned[ (abs(df_cleaned.coord_original_X_relative - df_cleaned.coord_user_X_relative)) <= 0.1]
-df_cleaned = df_cleaned[ (abs(df_cleaned.coord_original_Y_relative - df_cleaned.coord_user_Y_relative)) <= 0.1]
+# df_cleaned = df_cleaned[ (abs(df_cleaned.coord_original_X_relative - df_cleaned.coord_user_X_relative)) <= 0.1]
+# df_cleaned = df_cleaned[ (abs(df_cleaned.coord_original_Y_relative - df_cleaned.coord_user_Y_relative)) <= 0.1]
 
-plt.scatter(df_cleaned.coord_original_X_relative,df_cleaned.coord_user_X_relative, c='#2bbf42', label="Width", alpha=0.8)
-plt.scatter(df_cleaned.coord_original_Y_relative,df_cleaned.coord_user_Y_relative, c='#378743', label="Height", alpha=0.8)
-plt.xlabel('Original cross position ')
-plt.ylabel('User feedback cross position')
-#Relation between original and user feedback cross position for Width and Height relative to the screen size after data cleaning
-plt.legend()
-plt.grid(b=True, alpha= 0.1)
-plt.title("After data cleaning")
-plt.show()
+# plt.scatter(df_cleaned.coord_original_X_relative,df_cleaned.coord_user_X_relative, c='#2bbf42', label="Width", alpha=0.8)
+# plt.scatter(df_cleaned.coord_original_Y_relative,df_cleaned.coord_user_Y_relative, c='#378743', label="Height", alpha=0.8)
+# plt.xlabel('Original cross position ')
+# plt.ylabel('User feedback cross position')
+# #Relation between original and user feedback cross position for Width and Height relative to the screen size after data cleaning
+# plt.legend()
+# plt.grid(b=True, alpha= 0.1)
+# plt.title("After data cleaning")
+# plt.show()
 
-print("Interactions after cleaning: "+str(df_cleaned.shape[0]))
-
-#print(str(df_cleaned.groupby(['e-mail']).count()))
-
+# print("Interactions after cleaning: "+str(df_cleaned.shape[0]))
 
 def calculateDistanceTwoPoints(x1,y1,x2,y2):  
      dist = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)  
@@ -121,13 +120,16 @@ def calculateDistanceTwoPoints(x1,y1,x2,y2):
 
 def calculateDistanceOriginalUser(dataframe):
 	dataframe['distance_between_original_user_in_percentage'] =  dataframe.apply(lambda x: calculateDistanceTwoPoints(x.coord_original_X_relative, x.coord_original_Y_relative, x.coord_user_X_relative, x.coord_user_Y_relative) * 100, axis = 1)
-	return dataframe[['condition', 'distance_between_original_user_in_percentage', 'device']]
+	mean_sd_DistanceOriginalUser(dataframe)
+	return dataframe
 
-def averageDistanceOriginalUser(dataframe):
-	dataframe = calculateDistanceOriginalUser(dataframe)
+standardDeviation = 0
+def mean_sd_DistanceOriginalUser(dataframe):
 	averageDistance = dataframe['distance_between_original_user_in_percentage'].mean()
+	global standardDeviation 
+	standardDeviation= dataframe['distance_between_original_user_in_percentage'].std()
 	print("Average distance from Original position to User position: "+str(averageDistance)+ '%')
-	print("Standard deviation from the distance between original to user: "+str(dataframe['distance_between_original_user_in_percentage'].std()))
+	print("Standard deviation from the distance between original to user: "+str(standardDeviation))
 
 ### CALCULATION FACTOR OF ATTRACTION POSITION OF FACE
 def calculateFactorFace(dataframe):
@@ -242,103 +244,227 @@ def calculateDistanceFromFactorAndPlotPoints(dataframe,threshold,title):
 
 	print("Points which got closer to the attraction factor: "+closer_quantity)
 	print("Points which got farther to the attraction factor: "+farther_quantity)
-	
-	averageDistanceOriginalUser(dataframe)
 
 	plt.show()
 
 	return dataframe
-	
+
 
 ### Calculation of difference between mouse and touchescreen
-df_aux = df_cleaned.copy()
-print(df_aux.groupby(['device']).count())
-df_aux = calculateDistanceOriginalUser(df_aux)
-print(df_aux.groupby(['device']).mean())
-df_mouse = df_aux[df_aux.device == 'Mouse']
-df_mouse = df_mouse[df_mouse.condition != 'Calibration']
-print(df_mouse.distance_between_original_user_in_percentage.mean())
-df_touch = df_aux[df_aux.device == 'Touchscreen']
-df_touch = df_touch[df_touch.condition != 'Calibration']
-print(df_touch.distance_between_original_user_in_percentage.mean())
+# df_device = df_cleaned.copy()
+# print(df_device.groupby(['device']).count())
+# df_device = calculateDistanceOriginalUser(df_device)
+# print(df_device.groupby(['device']).mean())
+# df_mouse = df_device[df_device.device == 'Mouse']
+# df_mouse = df_mouse[df_mouse.condition != 'Calibration']
+# print(df_mouse.distance_between_original_user_in_percentage.mean())
+# df_touch = df_device[df_device.device == 'Touchscreen']
+# df_touch = df_touch[df_touch.condition != 'Calibration']
+# print(df_touch.distance_between_original_user_in_percentage.mean())
 
 ### CALCULATION points
-df_anova = pd.DataFrame()
-threshold = 0.15
+# df_anova = pd.DataFrame()
+# threshold = 0.25
 
-print("\n ----------- \n")
-print("Calibration")
-df_Calibration = df_cleaned[df_cleaned.condition == 'Calibration']
-averageDistanceOriginalUser(df_Calibration)
-df_anova = df_anova.append(calculateDistanceOriginalUser(df_Calibration))
-print("\n ----------- \n")
+# print("\n ----------- \n")
+# print("Calibration")
+# df_Calibration = df_cleaned[df_cleaned.condition == 'Calibration']
+# df_Calibration = calculateDistanceOriginalUser(df_Calibration)
+# df_anova = df_anova.append(df_Calibration[['condition','distance_between_original_user_in_percentage']])
 
-print("ClickHereBottomLeft")
-df_ClickHereBottomLeft = df_cleaned[df_cleaned.condition == 'ClickHereBottomLeft']
-df_ClickHereBottomLeft = calculateFactorButtonBottomLeft(df_ClickHereBottomLeft)
-df_ClickHereBottomLeft = calculateDistanceFromFactorAndPlotPoints(df_ClickHereBottomLeft, threshold, "Attraction result from click here bottom left scenario")
-df_anova = df_anova.append(calculateDistanceOriginalUser(df_ClickHereBottomLeft))
-# df_anova = df_anova.append(df_ClickHereBottomLeft[['condition', 'distance_factor_to_original', 'distance_factor_to_user']])
-print("\n ----------- \n")
+# print("\n ----------- \n")
 
-print("ClickHereTopRight")
-df_ClickHereTopRight = df_cleaned[df_cleaned.condition == 'ClickHereTopRight']
-df_ClickHereTopRight = calculateFactorButtonTopRight(df_ClickHereTopRight)
-df_ClickHereTopRight = calculateDistanceFromFactorAndPlotPoints(df_ClickHereTopRight, threshold, "Attraction result from click here top right scenario")
-df_anova = df_anova.append(calculateDistanceOriginalUser(df_ClickHereTopRight))
-# df_anova = df_anova.append(df_ClickHereTopRight[['condition', 'distance_factor_to_original', 'distance_factor_to_user']])
-print("\n ----------- \n")
+# print("ClickHereBottomLeft")
+# df_ClickHereBottomLeft = df_cleaned[df_cleaned.condition == 'ClickHereBottomLeft']
+# df_ClickHereBottomLeft = calculateFactorButtonBottomLeft(df_ClickHereBottomLeft)
+# df_ClickHereBottomLeft = calculateDistanceFromFactorAndPlotPoints(df_ClickHereBottomLeft, threshold, "Attraction result from click here bottom left scenario")
+# df_ClickHereBottomLeft = calculateDistanceOriginalUser(df_ClickHereBottomLeft)
+# df_anova = df_anova.append(df_ClickHereBottomLeft[['condition','distance_between_original_user_in_percentage']])
+# print("\n ----------- \n")
 
-print("Face")
-df_Face = df_cleaned[df_cleaned.condition == 'Face']
-df_Face = calculateFactorFace(df_Face)
-df_Face = calculateDistanceFromFactorAndPlotPoints(df_Face,threshold, "Attraction result from face missing eye scenario")
-df_anova = df_anova.append(calculateDistanceOriginalUser(df_Face))
-# df_anova = df_anova.append(df_Face[['condition', 'distance_factor_to_original', 'distance_factor_to_user']])
-print("\n ----------- \n")
+# print("ClickHereTopRight")
+# df_ClickHereTopRight = df_cleaned[df_cleaned.condition == 'ClickHereTopRight']
+# df_ClickHereTopRight = calculateFactorButtonTopRight(df_ClickHereTopRight)
+# df_ClickHereTopRight = calculateDistanceFromFactorAndPlotPoints(df_ClickHereTopRight, threshold, "Attraction result from click here top right scenario")
+# df_ClickHereTopRight = calculateDistanceOriginalUser(df_ClickHereTopRight)
+# df_anova = df_anova.append(df_ClickHereTopRight[['condition', 'distance_between_original_user_in_percentage']])
+# print("\n ----------- \n")
 
-print("SpiralLeft")
-df_SpiralLeft = df_cleaned[df_cleaned.condition == 'SpiralLeft']
-df_SpiralLeft = calculateFactorSpiralLeft(df_SpiralLeft)
-df_SpiralLeft = calculateDistanceFromFactorAndPlotPoints(df_SpiralLeft,threshold, "Attraction result from spiral on the top left scenario")
-df_anova = df_anova.append(calculateDistanceOriginalUser(df_SpiralLeft))
-# df_anova = df_anova.append(df_SpiralLeft[['condition', 'distance_factor_to_original', 'distance_factor_to_user']])
-print("\n ----------- \n")
+# print("Face")
+# df_Face = df_cleaned[df_cleaned.condition == 'Face']
+# df_Face = calculateFactorFace(df_Face)
+# df_Face = calculateDistanceFromFactorAndPlotPoints(df_Face,threshold, "Attraction result from face missing eye scenario")
+# df_Face = calculateDistanceOriginalUser(df_Face)
+# df_anova = df_anova.append(df_Face[['condition', 'distance_between_original_user_in_percentage']])
+# print("\n ----------- \n")
 
-print("SpiralCenter")
-df_SpiralCenter = df_cleaned[df_cleaned.condition == 'SpiralCenter']
-df_SpiralCenter = calculateFactorSpiralCenter(df_SpiralCenter)
-df_SpiralCenter = calculateDistanceFromFactorAndPlotPoints(df_SpiralCenter,threshold, "Attraction result from spiral on the center scenario")
-df_anova = df_anova.append(calculateDistanceOriginalUser(df_SpiralCenter))
-# df_anova = df_anova.append(df_SpiralCenter[['condition', 'distance_factor_to_original', 'distance_factor_to_user']])
-print("\n ----------- \n")
+# print("SpiralLeft")
+# df_SpiralLeft = df_cleaned[df_cleaned.condition == 'SpiralLeft']
+# df_SpiralLeft = calculateFactorSpiralLeft(df_SpiralLeft)
+# df_SpiralLeft = calculateDistanceFromFactorAndPlotPoints(df_SpiralLeft,threshold, "Attraction result from spiral on the top left scenario")
+# df_SpiralLeft = calculateDistanceOriginalUser(df_SpiralLeft)
+# df_anova = df_anova.append(df_SpiralLeft[['condition', 'distance_between_original_user_in_percentage']])
+# print("\n ----------- \n")
 
-df_anova.boxplot('distance_between_original_user_in_percentage', by='condition')
-plt.xlabel('Scenarios')
-plt.xticks(size=6)
-plt.ylabel('Distance (% of the screen total size)')
-plt.title("Distance from the original to user position by scenario")
-plt.grid(b=True, alpha= 0.1)
-plt.show()
+# print("SpiralCenter")
+# df_SpiralCenter = df_cleaned[df_cleaned.condition == 'SpiralCenter']
+# df_SpiralCenter = calculateFactorSpiralCenter(df_SpiralCenter)
+# df_SpiralCenter = calculateDistanceFromFactorAndPlotPoints(df_SpiralCenter,threshold, "Attraction result from spiral on the center scenario")
+# df_SpiralCenter = calculateDistanceOriginalUser(df_SpiralCenter)
+# df_anova = df_anova.append(df_SpiralCenter[['condition', 'distance_between_original_user_in_percentage']])
+# print("\n ----------- \n")
 
-plt.scatter(df_anova.condition,df_anova.distance_between_original_user_in_percentage, c='#378743', alpha=0.9)
-plt.xlabel('Scenarios')
-plt.xticks(size=6)
-plt.ylabel('Distance (% of the screen total size)')
-plt.title("Distance from original to user position of each interaction by scenario")
-plt.grid(b=True, alpha= 0.1)
-plt.show()
+### BOX PLOT
+# df_anova.boxplot('distance_between_original_user_in_percentage', by='condition')
+# plt.xlabel('Scenarios')
+# plt.xticks(size=6)
+# plt.ylabel('Distance (% of the screen total size)')
+# plt.title("Distance from the original to user position by scenario")
+# plt.grid(b=True, alpha= 0.1)
+# plt.show()
 
-import statsmodels.api as sm
-from statsmodels.formula.api import ols
+# plt.scatter(df_anova.condition,df_anova.distance_between_original_user_in_percentage, c='#378743', alpha=0.9)
+# plt.xlabel('Scenarios')
+# plt.xticks(size=6)
+# plt.ylabel('Distance (% of the screen total size)')
+# plt.title("Distance from original to user position of each interaction by scenario")
+# plt.grid(b=True, alpha= 0.1)
+# plt.show()
 
-mod = ols('distance_between_original_user_in_percentage ~ condition', data = df_anova).fit()
-aov_table = sm.stats.anova_lm(mod, typ=2)
-print(aov_table)
+### ANOVA CALCULATION
+# import statsmodels.api as sm
+# from statsmodels.formula.api import ols
 
-esq_sm = aov_table['sum_sq'][0]/(aov_table['sum_sq'][0]+aov_table['sum_sq'][1])
+# mod = ols('distance_between_original_user_in_percentage ~ condition', data = df_anova).fit()
+# aov_table = sm.stats.anova_lm(mod, typ=2)
+# print(aov_table)
 
-print("eta squared: "+str(esq_sm))
+# esq_sm = aov_table['sum_sq'][0]/(aov_table['sum_sq'][0]+aov_table['sum_sq'][1])
+
+# print("eta squared: "+str(esq_sm))
 
 # df_anova.to_csv('data_2way_15threshold.csv')
 
+
+### DISTRIBUTION 
+def distributionPlot(dataframe,color,label):
+	sns.distplot(dataframe, kde=True, rug=True, color=color, label=label)
+	plt.xlabel('Distance (% of the screen total size)')
+	plt.title("Distribution of distance difference, 15% threshold")
+	plt.grid(b=True, alpha= 0.1)
+
+
+# distributionPlot(df_ClickHereBottomLeft[['distance_difference_in_percentage']],"yellow","Click here bottom left")
+# distributionPlot(df_ClickHereTopRight[['distance_difference_in_percentage']],"blue", "Click here top right")
+# distributionPlot(df_Face[['distance_difference_in_percentage']],"green", "Face")
+# distributionPlot(df_SpiralLeft[['distance_difference_in_percentage']],"red", "Spiral left")
+# distributionPlot(df_SpiralCenter[['distance_difference_in_percentage']],"purple", "Spiral center")
+# plt.xlim(-13,13)
+# plt.ylim(0,0.3)
+# plt.legend()
+# plt.show()
+
+
+#### ATTRACTION DOCUMENTING
+def getQuadrant(coordinate,valueToBeDivided):
+	quadrant = math.floor((coordinate*100)/valueToBeDivided)
+	return quadrant
+
+def getQuadrantTotal(row,column):
+	quadrant = (column * 14 ) + row
+	return quadrant
+
+def createMatrix(dataframe,valueToBeDivided):
+	matrix = np.zeros((14*14,14*14) ,dtype=int)
+	for i in range(dataframe.shape[0]):
+	# for i in range(10):
+		quad_x_original = getQuadrant(dataframe.loc[dataframe.index[i],'coord_original_X_relative'],valueToBeDivided)
+		quad_y_original = getQuadrant(dataframe.loc[dataframe.index[i],'coord_original_Y_relative'],valueToBeDivided)
+		quad_x_user = getQuadrant(dataframe.loc[dataframe.index[i],'coord_user_X_relative'],valueToBeDivided)
+		quad_y_user = getQuadrant(dataframe.loc[dataframe.index[i],'coord_user_Y_relative'],valueToBeDivided)
+
+		quad_total_original = getQuadrantTotal(quad_x_original,quad_y_original)
+		quad_total_user = getQuadrantTotal(quad_x_user,quad_y_user)
+		# print(quad_total_original)
+		# print(quad_total_user)
+		# print("-")
+
+		# if (quad_total_user == 78):
+		# 	print(quad_x_user)
+		# 	print(dataframe.loc[dataframe.index[i],'coord_user_X_relative'])
+		# 	print(quad_y_user)
+		# 	print(dataframe.loc[dataframe.index[i],'coord_user_Y_relative'])
+
+		matrix[quad_total_original][quad_total_user] += 1
+
+	return matrix 
+
+def putRatioRows(matrix):
+	matrix2 = pd.DataFrame(matrix)
+	for i in range(len(matrix)):
+		sum = np.sum(matrix[i][:])	
+		if (sum > 0):
+			matrix2.iloc[i,:] = matrix2.iloc[i,:] / sum
+	return (matrix2.as_matrix())
+
+def sumOfEachColumn(matrix):
+	list_sum = []
+	for i in range(len(matrix[0])):
+		sum = np.sum(matrix[:,i])
+		list_sum.append(sum)
+	return list_sum
+
+
+def documentingAttractor(dataframe,scenario):
+	dataframe = dataframe[dataframe.condition == scenario]
+
+	matrix = createMatrix(dataframe,valueToBeDivided)
+	# print(matrix[:,78])
+	matrix = putRatioRows(matrix)
+	sum_in_each_column = sumOfEachColumn(matrix)
+	# print(sum_in_each_column)
+	# print(dataframe.shape[0])
+	return sum_in_each_column
+
+
+
+all_data_df = df.copy()
+all_data_df = calculateDistanceOriginalUser(all_data_df)
+# Calculate side of the square based on the standard deviation as diagonal of square
+side_square = (math.sqrt(2)*standardDeviation)/2
+print("Side of the square: "+str(side_square))
+# Standard Deviation of 10.375 and side of square of 7.336, so lets divide the screen in 14 squares in the horizontal, each of 7.143, and 14 on the vertical.
+# 7.143 * 14 = 100.01 .... So we always divide the coordinate by 7.143 and round to the lower int and we will get each quadrant, from 0 until 13. Matrix of 14x14
+valueToBeDivided = 7.143
+
+list_calibration = documentingAttractor(all_data_df,"Calibration")
+list_calibration = ((list_calibration / sum(list_calibration)) * 100)
+list_bottomleft = documentingAttractor(all_data_df,"ClickHereBottomLeft")
+list_bottomleft = ((list_bottomleft / sum(list_bottomleft)) * 100)
+list_topright = documentingAttractor(all_data_df,"ClickHereTopRight")
+list_topright = ((list_topright / sum(list_topright)) * 100)
+list_face = documentingAttractor(all_data_df,"Face")
+list_face = ((list_face / sum(list_face))* 100)
+list_spiralleft = documentingAttractor(all_data_df,"SpiralLeft")
+list_spiralleft = ((list_spiralleft / sum(list_spiralleft)) * 100)
+list_spiralcenter = documentingAttractor(all_data_df,"SpiralCenter")
+list_spiralcenter =((list_spiralcenter/ sum(list_spiralcenter)) * 100)
+
+def printFormat(lista):
+	for i in range(13,-1,-1):
+		print(i+1)
+		print(lista[(i*14):(i*14)+14])
+
+# printFormat(list_calibration)
+# print(max(list_calibration))
+# print("ClickHereBottomLeft")
+# printFormat(list_bottomleft)
+# print(max(list_bottomleft))
+# printFormat((list_topright))
+# print(max(list_topright))
+# printFormat((list_face))
+# print(max(list_face))
+# printFormat((list_spiralleft))
+# print(max(list_spiralleft))
+printFormat((list_spiralcenter))
+print(max(list_spiralcenter))
