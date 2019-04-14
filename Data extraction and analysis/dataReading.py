@@ -417,6 +417,7 @@ def sumOfEachColumn(matrix):
 
 def documentingAttractor(dataframe,scenario):
 	dataframe = dataframe[dataframe.condition == scenario]
+	print(scenario+": "+str(dataframe.shape[0]))
 
 	matrix = createMatrix(dataframe,valueToBeDivided)
 	# print(matrix[:,78])
@@ -436,6 +437,7 @@ print("Side of the square: "+str(side_square))
 # Standard Deviation of 10.375 and side of square of 7.336, so lets divide the screen in 14 squares in the horizontal, each of 7.143, and 14 on the vertical.
 # 7.143 * 14 = 100.01 .... So we always divide the coordinate by 7.143 and round to the lower int and we will get each quadrant, from 0 until 13. Matrix of 14x14
 valueToBeDivided = 7.143
+print(all_data_df.shape[0])
 
 list_calibration = documentingAttractor(all_data_df,"Calibration")
 list_calibration = ((list_calibration / sum(list_calibration)) * 100)
@@ -466,5 +468,5 @@ def printFormat(lista):
 # print(max(list_face))
 # printFormat((list_spiralleft))
 # print(max(list_spiralleft))
-printFormat((list_spiralcenter))
-print(max(list_spiralcenter))
+# printFormat((list_spiralcenter))
+# print(max(list_spiralcenter))
